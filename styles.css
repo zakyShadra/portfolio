@@ -208,6 +208,11 @@ img { max-width: 100%; display: block; }
    fully visible. */
 .js [data-reveal] { opacity: 0; will-change: transform, opacity; }
 
+/* While the globe is being spun, suppress text selection and the text cursor
+   so the drag feels like handling an object, not highlighting a paragraph. */
+body.is-spinning { user-select: none; }
+body.is-spinning * { cursor: grabbing !important; }
+
 /* --- Hero ---------------------------------------------------------------- */
 .hero {
   min-height: 100svh;

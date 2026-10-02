@@ -23,12 +23,13 @@ because ES modules and the CDN import need a real origin).
 
 Two systems read the same input (scroll):
 
-1. **Three.js** — a solid, lit planet. A 128-segment sphere mapped with real
+1. **Three.js** — a solid, lit planet. A 256-segment sphere mapped with 4K
    Earth textures (colour, normal map for relief, a cloud layer, night-side
    city lights and an atmosphere shell), lit by a single sun. Inside the
    pinned *"A planet, rendered live"* section, scroll progress drives its spin
    and the camera. Scroll forward → it advances; scroll back → it reverses;
-   stop → it freezes.
+   stop → it freezes. You can also **grab the globe and spin it** — drag it,
+   let go, and it coasts with inertia.
 2. **GSAP + ScrollTrigger** — element reveals, the pinned stage, and the
    horizontal work row. `scrub` ties an animation's timeline to scroll
    distance, which is the "scroll = playhead" behaviour.
@@ -36,6 +37,13 @@ Two systems read the same input (scroll):
 No `.mp4`, `.webm`, or image-sequence files exist in this project. The binary
 assets are the seven project screenshots plus four Earth textures (colour,
 normal, clouds, city lights) — still images, not animation.
+
+### Textures
+
+Sourced from [Solar System Scope](https://www.solarsystemscope.com/textures/)
+(CC BY 4.0). The originals are 8K JPEG/TIFF (~19 MB total); they are converted
+to 4K/2K WebP here, which keeps the on-screen sharpness while cutting the
+download to ~1.5 MB. Credit: Solar System Scope.
 
 ## Files
 
