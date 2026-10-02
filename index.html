@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zaky Shadra Ibnu Hibban — Software Engineer</title>
+  <meta name="description" content="Software engineer in Jakarta building local-first AI agents, automation bots and tools that run on the edge." />
+  <meta name="theme-color" content="#0b0b0d" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0d'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' fill='%23ff5c2e' text-anchor='middle'%3EZ%3C/text%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Fixed WebGL canvas sits behind everything. Content scrolls over it. -->
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Thin scroll-progress bar, so the input is visible. -->
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <a class="brand" href="#top">ZSH<span class="brand-dot">.</span></a>
+    <nav class="nav">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <span class="nav-status"><i></i>Open to work</span>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================ HERO ============================ -->
+    <section class="hero" id="top">
+      <p class="eyebrow" data-reveal>Software Engineer — Jakarta, Indonesia</p>
+      <h1 class="hero-title">
+        <span class="line" data-reveal>Zaky Shadra</span>
+        <span class="line" data-reveal>Ibnu Hibban</span>
+      </h1>
+      <p class="hero-lead" data-reveal>
+        I build local-first AI agents, automation bots and small tools that run
+        close to the metal — no cloud required to be useful.
+      </p>
+      <div class="hero-foot">
+        <span class="scroll-hint" data-reveal>
+          <span class="scroll-hint-track"><i></i></span>
+          Scroll — everything you see moves because of it
+        </span>
+        <span class="hud" data-reveal>scroll <b id="hud-progress">0.000</b> → rotation.y <b id="hud-rot">0.00</b></span>
+      </div>
+    </section>
+
+    <!-- ========================== STATEMENT ========================= -->
+    <section class="statement" id="about">
+      <div class="statement-inner">
+        <p class="kicker" data-reveal>01 — About</p>
+        <p class="statement-text" data-reveal>
+          I care about software that keeps working when the network is gone.
+          My projects run on the machine in front of them: an agent that asks
+          before it touches your filesystem, a bot that parses
+          <em>“besok jam 9 pagi”</em> without an API key, a browser that lives
+          in a terminal.
+        </p>
+        <dl class="facts" data-reveal>
+          <div><dt>Based in</dt><dd>Jakarta, Indonesia</dd></div>
+          <div><dt>Timezone</dt><dd>WIB (UTC+7)</dd></div>
+          <div><dt>Focus</dt><dd>AI agents · automation · tooling</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ==================== PINNED 3D SHOWCASE ====================== -->
+    <section class="stage" id="stage">
+      <div class="stage-pin">
+        <div class="stage-copy">
+          <p class="kicker" data-reveal>02 — In motion</p>
+          <h2 class="stage-title" data-reveal>
+            There is no video here.
+          </h2>
+          <p class="stage-body" data-reveal>
+            That shape is generated live in your browser by code. Your scroll
+            position is the input; JavaScript turns it into rotation, scale and
+            camera distance. Stop scrolling and it stops — exactly like a
+            scrubber.
+          </p>
+          <div class="readout" data-reveal>
+            <span>progress</span>
+            <b id="ro-progress">0.00</b>
+            <span>rot.y</span>
+            <b id="ro-rot">0.00</b>
+            <span>scale</span>
+            <b id="ro-scale">1.00</b>
+          </div>
+        </div>
+        <div class="stage-hint" data-reveal>Keep scrolling →</div>
+      </div>
+    </section>
+
+    <!-- ============================ WORK ============================ -->
+    <section class="work" id="work">
+      <div class="work-pin">
+        <header class="work-head">
+          <p class="kicker">03 — Selected work</p>
+          <span class="work-count"><b id="work-index">01</b> / 07</span>
+        </header>
+
+        <div class="work-track" id="work-track">
+          <!-- Cards are injected from projects.js at runtime -->
+        </div>
+
+        <footer class="work-foot">
+          <span>Drag or scroll — the row moves horizontally</span>
+          <span class="work-bar"><i id="work-bar"></i></span>
+        </footer>
+      </div>
+    </section>
+
+    <!-- =========================== CONTACT ========================== -->
+    <section class="contact" id="contact">
+      <p class="kicker" data-reveal>04 — Contact</p>
+      <a class="contact-mail" href="mailto:zakyshadra@gmail.com" data-reveal>zakyshadra@gmail.com</a>
+      <p class="contact-note" data-reveal>
+        Open to new projects and collaboration. The fastest way to reach me is
+        email — or find the code on GitHub.
+      </p>
+      <div class="contact-links" data-reveal>
+        <a href="https://github.com/zakyShadra" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="mailto:zakyshadra@gmail.com">Email ↗</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year">2025</span> Zaky Shadra Ibnu Hibban</span>
+    <span>Built with Three.js + GSAP · no build step</span>
+  </footer>
+
+  <!-- GSAP loads as classic scripts, so they run before the deferred module. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
