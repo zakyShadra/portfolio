@@ -228,7 +228,8 @@ function setup(THREE, canvas) {
 
   // --- Star field --------------------------------------------------------
   // A full sphere of stars around the camera, so the planet reads as being
-  // in space rather than floating in an empty black page.
+  // in space rather than floating in an empty page. Hidden in the light
+  // theme, where a starfield on paper would look like dust.
   const count = 900;
   const positions = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
@@ -244,6 +245,22 @@ function setup(THREE, canvas) {
     new THREE.PointsMaterial({ color: 0xcfcabf, size: 0.06, transparent: true, opacity: 0.75 })
   );
   scene.add(stars);
+
+  // The scene adapts to the page theme: stars fade out on paper, and the
+  // atmosphere shell brightens slightly so the globe still reads against a
+  // light background instead of floating with no edge.
+  const isDarkTheme = () =>
+    document.documentElement.getAttribute("data-theme") === "dark";
+
+  function applyTheme() {
+    const dark = isDarkTheme();
+    stars.material.opacity = dark ? 0.75 : 0;
+    stars.visible = dark;
+    atmosphere.material.opacity = dark ? 0.14 : 0.22;
+    renderer.toneMappingExposure = dark ? 1.35 : 1.15;
+  }
+  applyTheme();
+  window.addEventListener("themechange", applyTheme);
 
   // The values scroll + pointer feed into. Updated by GSAP/events; read here.
   const state = { progress: 0, heroProgress: 0 };
@@ -539,11 +556,29 @@ function initGSAP(state) {
 }
 
 /* ==========================================================================
-   4. Boot
+   4. Theme toggle
+   ========================================================================== */
+function initTheme() {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    const root = document.documentElement;
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) { /* private mode */ }
+    // Let the WebGL scene react (stars off on paper, etc.).
+    window.dispatchEvent(new Event("themechange"));
+  });
+}
+
+/* ==========================================================================
+   5. Boot
    ========================================================================== */
 function boot() {
   document.documentElement.classList.add("js");
   buildCards();
+  initTheme();
 
   // Three.js first (async), then GSAP, so scroll state exists before
   // ScrollTrigger starts reading it. If Three fails, GSAP still runs.

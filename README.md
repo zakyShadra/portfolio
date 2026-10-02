@@ -57,8 +57,11 @@ serve.py        local dev server
 
 ## Notes
 
-- Fonts: Instrument Serif (display), Space Grotesk (UI), JetBrains Mono
-  (metadata).
+- Fonts: Fraunces (display), Alegreya Sans (about prose), DM Sans (UI),
+  Space Mono (metadata).
+- Two themes (light / dark) with a toggle; the choice persists in
+  localStorage and defaults to the OS preference. All text colours clear
+  WCAG AA in both themes.
 - `prefers-reduced-motion` is respected: content shows immediately and the
   pinned/scrub effects are skipped.
 - If WebGL or the CDN is unavailable, the page still renders — content is

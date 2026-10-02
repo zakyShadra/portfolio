@@ -2,34 +2,80 @@
    scroll-portfolio — Zaky Shadra Ibnu Hibban
    --------------------------------------------------------------------------
    A demo of scroll-driven motion. No video, no pre-rendered animation:
-   the WebGL shape and every transition are generated from scroll position.
+   the WebGL planet and every transition are generated from scroll position.
 
-   Design intent (deliberately not the default "AI portfolio" look):
-   - near-black ink paper, one warm vermillion accent, no purple/blue gradient
-   - serif display (Instrument Serif) against grotesk UI (Space Grotesk)
-     and mono metadata (JetBrains Mono) — three voices, clear roles
-   - asymmetric, left-anchored layouts; nothing is centred by default
-   - hairlines instead of drop shadows; 2px radius, not 16px
+   Typography: Fraunces (display) / DM Sans (UI) / Space Mono (metadata).
+   Colours: two themes, both verified against WCAG AA. The palette avoids
+   the default "purple→blue gradient" look; the accent is a warm vermillion
+   with a teal secondary so the page has colour without being loud.
+
+   Every colour is a semantic token. Nothing below hard-codes a hex value,
+   so switching themes is a single attribute change on <html>.
    ========================================================================== */
 
-/* --- Tokens -------------------------------------------------------------- */
+/* --- Tokens: LIGHT (default) --------------------------------------------
+   Warm paper, near-black ink. This is the default because it is the most
+   readable in bright rooms and on cheap panels, which is where the earlier
+   dark-only version drew "I can't read it" complaints.
+   ------------------------------------------------------------------------ */
 :root {
-  --ink: #0b0b0d;
-  --ink-raised: #141417;
-  --ink-sunken: #070708;
-  --paper: #f4f1ea;
-  --paper-dim: #a8a49b;
-  --paper-muted: #6f6c66;
-  --rule: #26262b;
-  --rule-strong: #3a3a41;
+  color-scheme: light;
+
+  --bg: #f4f1ea;            /* page paper */
+  --bg-raised: #fffefb;     /* cards, panels that should lift */
+  --bg-sunken: #e9e5db;     /* inset wells, image frames */
+  --fg: #14130f;            /* headings, primary text   — 16.5:1 */
+  --fg-2: #3d3a33;          /* body text                — 10.1:1 */
+  --fg-muted: #6b675d;      /* metadata, captions       — 5.0:1  */
+  --rule: #d8d3c6;
+  --rule-strong: #b3ad9d;
+
+  --accent: #c93a12;        /* vermillion — fills, marks  */
+  --accent-ink: #a82f0d;    /* vermillion for small text — 6.1:1 */
+  --accent-2: #0f6b6b;      /* teal — secondary accent   — 5.6:1 */
+  --accent-wash: rgba(201, 58, 18, 0.10);
+
+  --on-accent: #fffefb;     /* text placed on an accent fill */
+  --scrim: rgba(20, 19, 15, 0.72);
+
+  --grain-opacity: 0.035;
+  --grain-blend: multiply;
+}
+
+/* --- Tokens: DARK --------------------------------------------------------
+   Same hues, inverted surfaces. Secondary text is lifted well above the
+   old #6f6c66 (which failed at 3.8:1) so nothing is a strain to read.
+   ------------------------------------------------------------------------ */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0b0b0d;
+  --bg-raised: #16161a;
+  --bg-sunken: #070708;
+  --fg: #f4f1ea;            /* 17.4:1 */
+  --fg-2: #cdc9bf;          /* 11.9:1 */
+  --fg-muted: #96928a;      /*  6.3:1 */
+  --rule: #2a2a30;
+  --rule-strong: #414149;
 
   --accent: #ff5c2e;
-  --accent-ink: #ff8156;
+  --accent-ink: #ff8156;    /* 8.0:1 */
+  --accent-2: #4fd1c5;      /* teal, brightened for dark — 10.5:1 */
   --accent-wash: rgba(255, 92, 46, 0.12);
 
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-ui: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --on-accent: #14130f;
+  --scrim: rgba(7, 7, 8, 0.66);
+
+  --grain-opacity: 0.05;
+  --grain-blend: overlay;
+}
+
+/* --- Tokens: shared ------------------------------------------------------ */
+:root {
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-prose: "Alegreya Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-ui: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, Menlo, monospace;
 
   --text-display: clamp(3rem, 11vw, 9rem);
   --text-title: clamp(2rem, 5vw, 4rem);
@@ -51,8 +97,7 @@
 * { margin: 0; }
 
 html {
-  background: var(--ink);
-  color-scheme: dark;
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -61,13 +106,15 @@ body {
   font-family: var(--font-ui);
   font-size: var(--text-body);
   line-height: 1.6;
-  color: var(--paper);
+  color: var(--fg-2);
+  background: var(--bg);
   overflow-x: hidden;
+  transition: background 400ms var(--ease-out), color 400ms var(--ease-out);
 }
 
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
-::selection { background: var(--accent); color: var(--ink); }
+::selection { background: var(--accent); color: var(--on-accent); }
 
 .skip-link {
   position: fixed;
@@ -75,7 +122,7 @@ img { max-width: 100%; display: block; }
   z-index: 100;
   padding: 0.6rem 1rem;
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   transform: translateY(-120%);
@@ -100,9 +147,9 @@ img { max-width: 100%; display: block; }
   inset: -50%;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
 }
 
 /* Content sits above the canvas. */
@@ -131,14 +178,15 @@ img { max-width: 100%; display: block; }
   height: var(--masthead-h);
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 0 var(--gutter);
   z-index: 15;
-  mix-blend-mode: difference;
+  color: var(--fg);
 }
 .brand {
   font-family: var(--font-display);
   font-size: 1.6rem;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 .brand-dot { color: var(--accent); }
@@ -172,20 +220,49 @@ img { max-width: 100%; display: block; }
   font-size: var(--text-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--fg-muted);
 }
 .nav-status i {
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: #35d07f;
-  box-shadow: 0 0 0 0 rgba(53, 208, 127, 0.6);
+  background: var(--accent-2);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 60%, transparent);
   animation: pulse 2.4s var(--ease-out) infinite;
 }
 @keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(53, 208, 127, 0.5); }
-  70%  { box-shadow: 0 0 0 7px rgba(53, 208, 127, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(53, 208, 127, 0); }
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 50%, transparent); }
+  70%  { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent-2) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 0%, transparent); }
 }
+
+/* --- Theme toggle -------------------------------------------------------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--text-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 260ms var(--ease-out), color 260ms var(--ease-out), background 260ms var(--ease-out);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent-ink); }
+.theme-toggle svg { width: 14px; height: 14px; display: block; }
+/* The button shows the theme you would switch TO, so it reads as an action. */
+.theme-toggle .icon-light { display: none; }   /* sun shown only in dark mode */
+.theme-toggle .icon-dark { display: block; }    /* moon shown in light mode */
+.theme-toggle .label-light { display: none; }
+.theme-toggle .label-dark { display: inline; }
+[data-theme="dark"] .theme-toggle .icon-light { display: block; }
+[data-theme="dark"] .theme-toggle .icon-dark { display: none; }
+[data-theme="dark"] .theme-toggle .label-light { display: inline; }
+[data-theme="dark"] .theme-toggle .label-dark { display: none; }
 
 /* --- Shared type helpers ------------------------------------------------- */
 .kicker {
@@ -200,7 +277,7 @@ img { max-width: 100%; display: block; }
   font-size: var(--text-meta);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--accent-2);
 }
 
 /* Reveal: elements start hidden only when JS confirms motion is allowed.
@@ -230,17 +307,18 @@ body.is-spinning * { cursor: grabbing !important; }
   line-height: 0.94;
   letter-spacing: -0.02em;
   margin: 1.25rem 0 2rem;
+  color: var(--fg);
 }
 .hero-title .line { display: block; }
 .hero-title .line:last-child {
   font-style: italic;
   padding-left: clamp(1rem, 12vw, 10rem);
-  color: var(--paper);
+  color: var(--fg);
 }
 .hero-lead {
   max-width: 44ch;
   font-size: var(--text-lead);
-  color: var(--paper-dim);
+  color: var(--fg-2);
   line-height: 1.55;
 }
 .hero-foot {
@@ -258,7 +336,7 @@ body.is-spinning * { cursor: grabbing !important; }
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   letter-spacing: 0.05em;
-  color: var(--paper-dim);
+  color: var(--fg-muted);
   text-transform: uppercase;
 }
 .scroll-hint-track {
@@ -282,10 +360,10 @@ body.is-spinning * { cursor: grabbing !important; }
 .hud {
   font-family: var(--font-mono);
   font-size: var(--text-meta);
-  color: var(--paper-muted);
+  color: var(--fg-muted);
   letter-spacing: 0.03em;
 }
-.hud b { color: var(--accent-ink); font-weight: 500; }
+.hud b { color: var(--accent-ink); font-weight: 700; }
 
 /* --- Statement ----------------------------------------------------------- */
 .statement {
@@ -298,12 +376,13 @@ body.is-spinning * { cursor: grabbing !important; }
 }
 .statement-inner { max-width: 46rem; }
 .statement-text {
-  font-family: var(--font-display);
-  font-size: var(--text-title);
-  line-height: 1.18;
-  letter-spacing: -0.01em;
+  font-family: var(--font-prose);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
   margin: 1.5rem 0 3rem;
-  color: var(--paper);
+  color: var(--fg);
 }
 .statement-text em {
   font-style: italic;
@@ -313,7 +392,7 @@ body.is-spinning * { cursor: grabbing !important; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
   gap: 1.5rem 2rem;
-  border-top: var(--rule-strong) 1px solid;
+  border-top: 1px solid var(--rule-strong);
   padding-top: 1.75rem;
 }
 .facts dt {
@@ -321,10 +400,10 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: var(--text-meta);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
   margin-bottom: 0.35rem;
 }
-.facts dd { font-size: var(--text-body); color: var(--paper); }
+.facts dd { font-size: var(--text-body); color: var(--fg); }
 
 /* --- Stage (pinned 3D) --------------------------------------------------- */
 .stage { position: relative; }
@@ -345,9 +424,10 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: var(--text-title);
   line-height: 1.02;
   margin: 1.25rem 0 1.5rem;
+  color: var(--fg);
 }
 .stage-body {
-  color: var(--paper-dim);
+  color: var(--fg-2);
   max-width: 40ch;
   font-size: var(--text-lead);
 }
@@ -357,13 +437,13 @@ body.is-spinning * { cursor: grabbing !important; }
   gap: 0.4rem 1rem;
   margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: var(--rule-strong) 1px solid;
+  border-top: 1px solid var(--rule-strong);
   width: fit-content;
   font-family: var(--font-mono);
   font-size: var(--text-meta);
 }
-.readout span { color: var(--paper-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-.readout b { color: var(--accent-ink); font-weight: 500; text-align: right; }
+.readout span { color: var(--fg-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.readout b { color: var(--accent-ink); font-weight: 700; text-align: right; }
 .stage-hint {
   align-self: end;
   justify-self: end;
@@ -372,7 +452,7 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: var(--text-meta);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
 }
 
 /* --- Work (horizontal) --------------------------------------------------- */
@@ -396,16 +476,16 @@ body.is-spinning * { cursor: grabbing !important; }
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   letter-spacing: 0.1em;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
 }
-.work-count b { color: var(--paper); font-weight: 500; }
+.work-count b { color: var(--fg); font-weight: 700; }
 .work-foot {
   border-top: 1px solid var(--rule);
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
 }
 .work-bar {
   width: 180px; height: 2px;
@@ -439,30 +519,26 @@ body.is-spinning * { cursor: grabbing !important; }
   position: relative;
   aspect-ratio: 1400 / 788;
   overflow: hidden;
-  background: var(--ink-sunken);
+  background: var(--bg-sunken);
   border: 1px solid var(--rule);
   border-radius: 2px;
 }
 .card-figure img {
   width: 100%; height: 100%;
   object-fit: cover;
-  filter: grayscale(0.35) contrast(1.05);
+  filter: contrast(1.04);
   transition: filter 500ms var(--ease-out), transform 700ms var(--ease-out);
 }
-.card:hover .card-figure img {
-  filter: grayscale(0) contrast(1);
-  transform: scale(1.03);
-}
+.card:hover .card-figure img { transform: scale(1.03); }
 .card-index {
   position: absolute;
   top: 0.75rem; left: 0.75rem;
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   letter-spacing: 0.1em;
-  color: var(--paper);
-  background: rgba(11, 11, 13, 0.7);
+  color: var(--on-accent);
+  background: var(--accent);
   padding: 0.25rem 0.5rem;
-  backdrop-filter: blur(4px);
 }
 .card-body { display: flex; flex-direction: column; gap: 0.7rem; }
 .card-title {
@@ -470,8 +546,9 @@ body.is-spinning * { cursor: grabbing !important; }
   font-weight: 400;
   font-size: clamp(1.5rem, 2.4vw, 2.1rem);
   line-height: 1.05;
+  color: var(--fg);
 }
-.card-tagline { color: var(--paper-dim); font-size: var(--text-small); max-width: 38ch; }
+.card-tagline { color: var(--fg); font-size: var(--text-body); line-height: 1.55; max-width: 40ch; }
 .card-specs {
   display: flex;
   flex-wrap: wrap;
@@ -483,7 +560,7 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: 0.68rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
   border: 1px solid var(--rule-strong);
   border-radius: 999px;
   padding: 0.2rem 0.6rem;
@@ -508,6 +585,7 @@ body.is-spinning * { cursor: grabbing !important; }
   display: inline-block;
   position: relative;
   width: fit-content;
+  color: var(--fg);
 }
 .contact-mail::after {
   content: "";
@@ -521,7 +599,7 @@ body.is-spinning * { cursor: grabbing !important; }
 }
 .contact-mail:hover { color: var(--accent-ink); }
 .contact-mail:hover::after { transform: scaleX(1); }
-.contact-note { max-width: 42ch; color: var(--paper-dim); }
+.contact-note { max-width: 42ch; color: var(--fg-2); }
 .contact-links {
   display: flex;
   gap: 2rem;
@@ -532,7 +610,7 @@ body.is-spinning * { cursor: grabbing !important; }
   text-transform: uppercase;
 }
 .contact-links a { border-bottom: 1px solid var(--rule-strong); padding-bottom: 3px; transition: border-color 300ms var(--ease-out), color 300ms var(--ease-out); }
-.contact-links a:hover { color: var(--accent-ink); border-color: var(--accent); }
+.contact-links a:hover { color: var(--accent-2); border-color: var(--accent-2); }
 
 /* --- Footer -------------------------------------------------------------- */
 .footer {
@@ -546,12 +624,13 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: var(--text-meta);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--paper-muted);
+  color: var(--fg-muted);
 }
 
 /* --- Responsive ---------------------------------------------------------- */
 @media (max-width: 820px) {
   .nav-status { display: none; }
+  .nav { gap: 1.1rem; }
   .stage-pin { grid-template-columns: 1fr; align-content: center; gap: 1.5rem; }
   .stage-hint { justify-self: start; padding-bottom: 0; }
   .hero-title .line:last-child { padding-left: 1.5rem; }
@@ -562,4 +641,5 @@ body.is-spinning * { cursor: grabbing !important; }
 @media (prefers-reduced-motion: reduce) {
   .scroll-hint-track i, .nav-status i { animation: none; }
   * { scroll-behavior: auto !important; }
+  body { transition: none; }
 }
