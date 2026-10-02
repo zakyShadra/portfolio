@@ -560,8 +560,9 @@ body.is-spinning * { cursor: grabbing !important; }
   font-size: 0.68rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--fg-muted);
-  border: 1px solid var(--rule-strong);
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: 999px;
   padding: 0.2rem 0.6rem;
 }
