@@ -23,16 +23,19 @@ because ES modules and the CDN import need a real origin).
 
 Two systems read the same input (scroll):
 
-1. **Three.js** — an icosahedron wireframe + particle field generated at
-   runtime. Inside the pinned *"There is no video here"* section, scroll
-   progress maps directly to `rotation`, `scale` and camera distance. Scroll
-   forward → it advances; scroll back → it reverses; stop → it freezes.
+1. **Three.js** — a solid, lit planet. A 128-segment sphere mapped with real
+   Earth textures (colour, normal map for relief, a cloud layer, night-side
+   city lights and an atmosphere shell), lit by a single sun. Inside the
+   pinned *"A planet, rendered live"* section, scroll progress drives its spin
+   and the camera. Scroll forward → it advances; scroll back → it reverses;
+   stop → it freezes.
 2. **GSAP + ScrollTrigger** — element reveals, the pinned stage, and the
    horizontal work row. `scrub` ties an animation's timeline to scroll
    distance, which is the "scroll = playhead" behaviour.
 
-No `.mp4`, `.webm`, or image-sequence files exist in this project. The only
-binary assets are the seven project screenshots.
+No `.mp4`, `.webm`, or image-sequence files exist in this project. The binary
+assets are the seven project screenshots plus four Earth textures (colour,
+normal, clouds, city lights) — still images, not animation.
 
 ## Files
 
