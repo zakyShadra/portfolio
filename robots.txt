@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zakyshadra.github.io/portfolio/sitemap.xml
+Sitemap: https://portfolio.ices.my.id/sitemap.xml
